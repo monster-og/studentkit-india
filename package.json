@@ -1,0 +1,20 @@
+{
+  "name": "studentkit-india",
+  "version": "1.0.0",
+  "description": "All-in-One Academic, Exam & Utility Tools for Indian Students",
+  "scripts": {
+    "start": "python -m http.server 3000",
+    "serve": "npx -y serve . -l 3000",
+    "dev": "python -m http.server 3000"
+  },
+  "keywords": [
+    "studentkit",
+    "india",
+    "percentage-calculator",
+    "cgpa-calculator",
+    "attendance-calculator",
+    "image-compressor-upsc"
+  ],
+  "author": "StudentKit India",
+  "license": "MIT"
+}
