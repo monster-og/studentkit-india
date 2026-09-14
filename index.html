@@ -257,19 +257,7 @@
                 <span class="stat-num">₹0</span>
                 <span class="stat-label">Always Free</span>
               </div>
-              <div class="stat-box visitor-stat-box">
-                <span class="stat-num" id="visitor-count">
-                  <span class="visitor-dots"><span></span><span></span><span></span></span>
-                </span>
-                <span class="stat-label">👥 Total Visitors</span>
-              </div>
             </div>
-          </div>
-
-          <!-- Live Visitor Counter Banner -->
-          <div class="visitor-counter-banner" id="visitor-banner">
-            <div class="visitor-live-dot"></div>
-            <span>👁️ <strong id="visitor-banner-count">...</strong> students have visited StudentKit India</span>
           </div>
 
           <!-- Academic Category -->
@@ -1370,7 +1358,6 @@
             <span class="badge-item">UPSC &amp; SSC Guidelines</span>
             <span class="badge-item">Zero Cloud Uploads</span>
             <span class="badge-item">Made for Students</span>
-            <span class="badge-item footer-visitor-badge">👁️ <span id="footer-visitor-count">...</span> Visitors</span>
           </div>
           <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
             Designed with Pair Programming Assistant Antigravity &bull; Clean Vanilla Web Architecture
@@ -1380,50 +1367,60 @@
     </div>
   </div>
 
+  <!-- ✅ LIVE VISITOR COUNTER BAR (bottom fixed) -->
+  <div class="live-visitor-bar" id="live-visitor-bar">
+    <span class="live-green-dot"></span>
+    <span class="live-bar-text">
+      <span id="live-visitor-count">0</span> log abhi is website par hain
+    </span>
+  </div>
+
   <!-- Toast Notification Container -->
   <div id="toast-container"></div>
 
   <!-- Master Script (ES Module) -->
   <script type="module" src="js/app.js"></script>
 
-  <!-- Visitor Counter Script -->
-  <script>
-    (function () {
-      const NAMESPACE = 'studentkit-india';
-      const KEY = 'total-visitors';
-      const API = `https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`;
+  <!-- 🔥 Firebase Live Visitor Counter -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getDatabase, ref, set, remove, onValue, onDisconnect } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
 
-      function formatNum(n) {
-        if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M+';
-        if (n >= 1000) return (n / 1000).toFixed(1) + 'K+';
-        return n.toLocaleString('en-IN');
-      }
+    // 🔧 Firebase Config — yahan apna config daalo
+    const firebaseConfig = {
+      apiKey: "APNA_API_KEY_YAHAN",
+      authDomain: "APNA_PROJECT_ID.firebaseapp.com",
+      databaseURL: "https://APNA_PROJECT_ID-default-rtdb.firebaseio.com",
+      projectId: "APNA_PROJECT_ID"
+    };
 
-      function setCount(value) {
-        const formatted = formatNum(value);
-        const el = document.getElementById('visitor-count');
-        const bannerEl = document.getElementById('visitor-banner-count');
-        const footerEl = document.getElementById('footer-visitor-count');
-        if (el) el.textContent = formatted;
-        if (bannerEl) bannerEl.textContent = formatted;
-        if (footerEl) footerEl.textContent = formatted;
-      }
+    try {
+      const app = initializeApp(firebaseConfig);
+      const db = getDatabase(app);
 
-      fetch(API)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.value) setCount(data.value);
-        })
-        .catch(() => {
-          // Fallback: show badge silently if API fails
-          const el = document.getElementById('visitor-count');
-          if (el) el.textContent = '1K+';
-          const bannerEl = document.getElementById('visitor-banner-count');
-          if (bannerEl) bannerEl.textContent = '1,000+';
-          const footerEl = document.getElementById('footer-visitor-count');
-          if (footerEl) footerEl.textContent = '1K+';
-        });
-    })();
+      // Unique ID is tab ke liye
+      const sessionId = 'visitor_' + Math.random().toString(36).substr(2, 12) + '_' + Date.now();
+      const myRef = ref(db, 'live_visitors/' + sessionId);
+
+      // Is visitor ko add karo
+      await set(myRef, { joined: Date.now() });
+
+      // Tab band hone par automatically hata do
+      onDisconnect(myRef).remove();
+
+      // Live count listen karo
+      const allRef = ref(db, 'live_visitors');
+      onValue(allRef, (snapshot) => {
+        const count = snapshot.exists() ? Object.keys(snapshot.val()).length : 0;
+        const el = document.getElementById('live-visitor-count');
+        if (el) el.textContent = count;
+      });
+
+    } catch (e) {
+      // Firebase config nahi diya abhi tak — bar hide rakho
+      const bar = document.getElementById('live-visitor-bar');
+      if (bar) bar.style.display = 'none';
+    }
   </script>
 </body>
 </html>
