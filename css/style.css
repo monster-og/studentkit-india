@@ -662,3 +662,103 @@ body {
     max-width: 100%;
   }
 }
+
+/* ==========================================================================
+   Visitor Counter Styles
+   ========================================================================== */
+
+/* Stat box highlight for visitor count */
+.visitor-stat-box {
+  border: 1px solid rgba(99, 102, 241, 0.4) !important;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(16, 185, 129, 0.08)) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.visitor-stat-box::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+  animation: pulse-glow 3s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+/* Loading dots animation */
+.visitor-dots {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.visitor-dots span {
+  width: 6px;
+  height: 6px;
+  background: var(--primary);
+  border-radius: 50%;
+  animation: bounce-dot 1.2s infinite ease-in-out;
+}
+
+.visitor-dots span:nth-child(2) { animation-delay: 0.2s; }
+.visitor-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce-dot {
+  0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+  40% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Visitor Banner */
+.visitor-counter-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  background: linear-gradient(90deg, rgba(99,102,241,0.1), rgba(16,185,129,0.1), rgba(99,102,241,0.1));
+  background-size: 200% 100%;
+  animation: shimmer-banner 4s linear infinite;
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  border-radius: 12px;
+  padding: 0.7rem 1.2rem;
+  margin: 0 0 1.5rem 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  backdrop-filter: blur(8px);
+}
+
+@keyframes shimmer-banner {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Live green blinking dot */
+.visitor-live-dot {
+  width: 10px;
+  height: 10px;
+  background: #10B981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  animation: live-pulse 1.8s infinite;
+  flex-shrink: 0;
+}
+
+@keyframes live-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.6); }
+  70% { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
+  100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+}
+
+/* Footer visitor badge highlight */
+.footer-visitor-badge {
+  background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(16,185,129,0.15)) !important;
+  border-color: rgba(99,102,241,0.4) !important;
+  color: var(--primary-light) !important;
+  font-weight: 600;
+}
+

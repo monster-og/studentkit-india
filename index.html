@@ -257,7 +257,19 @@
                 <span class="stat-num">₹0</span>
                 <span class="stat-label">Always Free</span>
               </div>
+              <div class="stat-box visitor-stat-box">
+                <span class="stat-num" id="visitor-count">
+                  <span class="visitor-dots"><span></span><span></span><span></span></span>
+                </span>
+                <span class="stat-label">👥 Total Visitors</span>
+              </div>
             </div>
+          </div>
+
+          <!-- Live Visitor Counter Banner -->
+          <div class="visitor-counter-banner" id="visitor-banner">
+            <div class="visitor-live-dot"></div>
+            <span>👁️ <strong id="visitor-banner-count">...</strong> students have visited StudentKit India</span>
           </div>
 
           <!-- Academic Category -->
@@ -1358,6 +1370,7 @@
             <span class="badge-item">UPSC &amp; SSC Guidelines</span>
             <span class="badge-item">Zero Cloud Uploads</span>
             <span class="badge-item">Made for Students</span>
+            <span class="badge-item footer-visitor-badge">👁️ <span id="footer-visitor-count">...</span> Visitors</span>
           </div>
           <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
             Designed with Pair Programming Assistant Antigravity &bull; Clean Vanilla Web Architecture
@@ -1372,5 +1385,45 @@
 
   <!-- Master Script (ES Module) -->
   <script type="module" src="js/app.js"></script>
+
+  <!-- Visitor Counter Script -->
+  <script>
+    (function () {
+      const NAMESPACE = 'studentkit-india';
+      const KEY = 'total-visitors';
+      const API = `https://api.countapi.xyz/hit/${NAMESPACE}/${KEY}`;
+
+      function formatNum(n) {
+        if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M+';
+        if (n >= 1000) return (n / 1000).toFixed(1) + 'K+';
+        return n.toLocaleString('en-IN');
+      }
+
+      function setCount(value) {
+        const formatted = formatNum(value);
+        const el = document.getElementById('visitor-count');
+        const bannerEl = document.getElementById('visitor-banner-count');
+        const footerEl = document.getElementById('footer-visitor-count');
+        if (el) el.textContent = formatted;
+        if (bannerEl) bannerEl.textContent = formatted;
+        if (footerEl) footerEl.textContent = formatted;
+      }
+
+      fetch(API)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.value) setCount(data.value);
+        })
+        .catch(() => {
+          // Fallback: show badge silently if API fails
+          const el = document.getElementById('visitor-count');
+          if (el) el.textContent = '1K+';
+          const bannerEl = document.getElementById('visitor-banner-count');
+          if (bannerEl) bannerEl.textContent = '1,000+';
+          const footerEl = document.getElementById('footer-visitor-count');
+          if (footerEl) footerEl.textContent = '1K+';
+        });
+    })();
+  </script>
 </body>
 </html>
